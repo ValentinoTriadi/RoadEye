@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.log
+*.pyc
+__pycache__
+*.sqlite3
 
 # C extensions
 *.so
