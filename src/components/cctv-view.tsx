@@ -1,6 +1,4 @@
 import React from "react";
-import testImage from "@/assets/images/test-image.png";
-import Image from "next/image";
 import {
   Pagination,
   PaginationContent,
@@ -10,17 +8,17 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import urls from "@/utils/data-url";
 
 function CCTVView() {
   return (
     <>
       <div className='grid grid-cols-3 w-full gap-8 place-content-between'>
-        <Image src={testImage} alt='test' />
-        <Image src={testImage} alt='test' />
-        <Image src={testImage} alt='test' />
-        <Image src={testImage} alt='test' />
-        <Image src={testImage} alt='test' />
-        <Image src={testImage} alt='test' />
+        {urls.slice(0, 6).map((url, idx) => (
+          <video autoPlay key={idx}>
+            <source src={url} type='application/x-mpegURL' />
+          </video>
+        ))}
       </div>
 
       <div>
