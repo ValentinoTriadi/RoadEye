@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,16 +9,54 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowDown, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import CCTVView from "./cctv-view";
 import { Input } from "./ui/input";
-import dummyLocationData from "@/utils/data-location";
+import dummyLocationData, { Kota } from "@/utils/data-location";
 import { LocationData } from "@/utils/data-location";
 
 function CCTVFilter() {
-  const [selectedProvinsi, setSelectedProvinsi] = React.useState("");
-  const [selectedKota, setSelectedKota] = React.useState("");
-  const [selectedKecamatan, setSelectedKecamatan] = React.useState("");
+  const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
+  const [selectedKota, setSelectedKota] = useState<string>("");
+  const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
+
+  const getCitiesInProvince = () => {
+    const selectedProvinceData = dummyLocationData.provinces.find(
+      (province) => province.name === selectedProvinsi
+    );
+
+    if (!selectedProvinceData) {
+      return [];
+    }
+
+    const cityNames = selectedProvinceData.cities.map((city) => city.name);
+
+    return cityNames;
+  };
+
+  const getDistrictsInCity = () => {
+    const selectedProvinceData = dummyLocationData.provinces.find(
+      (province) => province.name === selectedProvinsi
+    );
+
+    if (!selectedProvinceData) {
+      return ["Provinsi belum dipilih"];
+    }
+
+    const selectedCityData = selectedProvinceData.cities.find(
+      (city) => city.name === selectedKota
+    );
+
+    if (!selectedCityData) {
+      return ["Kota belum dipilih"];
+    }
+
+    const districtNames = selectedCityData.districts.map(
+      (district) => district.name
+    );
+
+    return districtNames;
+  };
 
   return (
     <>
@@ -29,9 +67,10 @@ function CCTVFilter() {
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent className=''>
-            {dummyLocationData.provinces.map((provinsi) => (
+            {dummyLocationData.provinces.map((provinsi, idx) => (
               <DropdownMenuItem
                 onClick={() => setSelectedProvinsi(provinsi.name)}
+                key={idx}
               >
                 {provinsi.name}
               </DropdownMenuItem>
@@ -45,10 +84,11 @@ function CCTVFilter() {
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            {getCitiesInProvince().map((kota, idx) => (
+              <DropdownMenuItem onClick={() => setSelectedKota(kota)} key={idx}>
+                {kota}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -58,10 +98,14 @@ function CCTVFilter() {
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            {getDistrictsInCity().map((kecamatan, idx) => (
+              <DropdownMenuItem
+                onClick={() => setSelectedKecamatan(kecamatan)}
+                key={idx}
+              >
+                {kecamatan}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
