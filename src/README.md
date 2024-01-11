@@ -5,13 +5,21 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, install the pnpm:
 
 ```bash
+cd src
 npm i -g pnpm
+pnpm install
 ```
 
-Then run
+We recommend to make a python virtual environment for this project, the process is as follow
 
 ```bash
-pnpm install
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Lastly, run
+
+```bash
 pnpm dev
 ```
 
