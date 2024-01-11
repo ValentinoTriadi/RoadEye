@@ -1,52 +1,83 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 from PIL import Image
 from waitress import serve
+from sqlalchemy.orm import Session
+from typing import Annotated
+from datetime import datetime, time
+
+from .schemas import schemas 
+from .models import models
+from .routes.detect import startapplication
+from .config.db import SessionLocal, engine
+from .routes.CRUD.create import createAccidentRecord
+from .routes.CRUD.delete import deleteAccidentRecord
+from .routes.CRUD.read import getAccidentRecord, getAllAccidentRecord 
+
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
+
+app.mount("/static", StaticFiles(directory="api/static"), name="static")
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
-
 @app.post("/detect")
-def detect():
+def detect(location:str, video_path:str, record:schemas.AccidentBase, db: Session = Depends(get_db)):
     """
-        Handler of /detect POST endpoint
-        Receives uploaded file with a name "image_file", passes it
-        through YOLOv8 object detection network and returns and array
-        of bounding boxes.
-        :return: a JSON array of objects bounding boxes in format [[x1,y1,x2,y2,object_type,probability],..]
+        Yuuuhuuuuuuuuuuuu
     """
-    buf = Request.files["image_file"]
-    boxes = detect_objects_on_image(buf.stream)
-    return JSONResponse(boxes)
+    result = startapplication(location, video_path)
+    if result:
+        record.location = location
+        record.video_path = video_path
+        record.date = datetime.now()  
+        # Return the created record
+        return createAccidentRecord(db = db, Accident = record)
+        
+    else:
+        return JSONResponse(content={"status": "No Accident"}, status_code=200)
 
-def detect_objects_on_image(buf):
-    """
-    Function receives an image,
-    passes it through YOLOv8 neural network
-    and returns an array of detected objects
-    and their bounding boxes
-    :param buf: Input image file stream
-    :return: Array of bounding boxes in format [[x1,y1,x2,y2,object_type,probability],..]
-    """
-    model = YOLO("best.pt")
-    results = model.predict(Image.open(buf))
-    result = results[0]
-    output = []
-    for box in result.boxes:
-        x1, y1, x2, y2 = [
-            round(x) for x in box.xyxy[0].tolist()
-        ]
-        class_id = box.cls[0].item()
-        prob = round(box.conf[0].item(), 2)
-        output.append([
-            x1, y1, x2, y2, result.names[class_id], prob
-        ])
-    return output
+
+@app.put("/delete-accident")
+def deleteAccident(id:int, db: Session = Depends(get_db)):
+    if (not getAccidentRecord(db, id)):
+        raise HTTPException(status_code=400, detail="Accident ID not found!")
+    deleteAccidentRecord(db, id)
+    return {"status": "deleted"}
+
+@app.get("/get-accident/{id}", response_model=schemas.AccidentBase)
+def getAccidentById(id:int, db: Session = Depends(get_db)):
+    record = getAccidentRecord(db, id)
+    if (record):
+        return record
+    raise HTTPException(status_code=400, detail="Accident ID not found!")
+
+@app.get("/get-accident/", response_model=list[schemas.AccidentBase])
+def getAccident(db: Session = Depends(get_db)):
+    record = getAllAccidentRecord(db)
+    if (record):
+        return record
+    raise HTTPException(status_code=400, detail="Accident record doesn't exists!")

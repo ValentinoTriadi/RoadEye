@@ -16,7 +16,7 @@ export default function Home() {
       // Redirect to the unsupported page
       router.push("/unsupported");
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
