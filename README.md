@@ -2,11 +2,10 @@
 
 
 ## Team
-* [![][Next.js]][Next-url]
-* [![Maulvi Ziadinda Maulana][Ulvi-Hacker]][https://github.com/maulvi-zm]
-* [![Muhammad Maulana Firdaus][Maul-Hustler]][https://github.com/Maull09]
-* [![Valentino Chryslie Triadi][Valen-Hacker]][https://github.com/ValentinoTriadi]
-* [![Rizqi Andhika Pratama][Qie-Hipster]][https://github.com/qiewi]
+* ![Maulvi Ziadinda Maulana][Ulvi-Hacker]
+* ![Muhammad Maulana Firdaus][Maul-Hustler]
+* ![Valentino Chryslie Triadi][Valen-Hacker]
+* ![Rizqi Andhika Pratama][Qie-Hipster]
 <!-- [![LinkedIn][linkedin-shield-qiya]][linkedin-qiya] -->
 
 
