@@ -5,38 +5,59 @@ from PIL import Image
 import random
 import numpy as np
 from ultralytics import YOLO
+import cv2
 
-class AccidentDetectionModel(object):
-    class_nums = ['Accident', "No Accident"]
+model = YOLO("best.pt")
+font = cv2.FONT_HERSHEY_SIMPLEX
+url = "https://103.164.218.114/camera/share/tios/2/25/index.m3u8"
+source_video = "./api/static/video.mp4"
 
-    def __init__(self, model_file):
-        self.loaded_model = YOLO(model_file)
+def startapplication(location, video_path, url):
+    video = cv2.VideoCapture(source_video) # for camera use video = cv2.VideoCapture(0)
+    frame_counter = 0
+    frame_list = []
+    video_folder = ".api/static/video"
 
-    def predict_accident(self, img):
-        self.preds = self.loaded_model.predict(img)
-        return AccidentDetectionModel.class_nums[np.argmax(self.preds)], self.preds
+    # create video path
+    count = 0
+    video_path = f'{video_path}_{count}'
+    while os.path.isfile(os.path.join(video_folder, f'{location}_{video_path}.mp4')):
+        count += 1
+        video_path = f'{video_path}_{count}'
+    video_output_path = os.path.join(video_folder, f'{location}_{video_path}.mp4')
 
-
-def startapplication(location:str, filename:str):
-    return filename
-    model = AccidentDetectionModel("best.pt")
-    video = cv2.VideoCapture(filename) # for camera use video = cv2.VideoCapture(0)
-    save_folder = "./static/image"
-    video_folder = "./static/video"
-    video_output_path = os.path.join(video_folder, f'crash_alert_{location}.mp4')
-
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)
     if not os.path.exists(video_folder):
         os.makedirs(video_folder)
 
-    ret, frame = video.read()
-    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    roi = cv2.resize(gray_frame, (250, 250))  # Resize the input image to (64, 64)
+    ret = True
+    while ret:
+        ret, frame = video.read()
+        results = model.predict(frame)
 
-    pred, prob = model.predict_accident(roi[np.newaxis, :, :])
-    prob = round(prob[0][0] * 100, 2)
-    if pred == "Accident" and prob > 85:
-        return filename
-    else:
-        return False
+        # Process results list
+        boxes = results[0].boxes.xywh.cpu()                        #xywh bbox list
+        clss = results[0].boxes.cls.cpu().tolist()                 #classes Id list
+        names = results[0].names                                   #classes names list
+        confs = results[0].boxes.conf.float().cpu().tolist()       #probabilities of classes
+
+        for box, cls, conf in zip(boxes, clss, confs):
+            x, y, w, h = box
+            label = str(names[cls] + " "+ str(round(conf, 2)))
+            x1, y1, x2, y2 = x-w/2, y-h/2, x+w/2, y+h/2            
+            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
+            cv2.putText(frame, label, (int(x1), int(y1)), font, 1, (255, 255, 0), 2)
+
+            if (str(names[cls]) == "car-crash" or str(names[cls]) == "car-crashs") and round(conf, 2) > 0.7:
+                frame_list.append(frame)  # Tambahkan frame ke daftar
+                frame_counter += 1
+            else:
+                if len(frame_list) > 30 : 
+                    frame_height, frame_width, _ = frame_list[0].shape
+                    video_writer = cv2.VideoWriter(video_output_path, cv2.VideoWriter_fourcc(*"mp4v"), 15.0,
+                                                (frame_width, frame_height))
+                    for saved_frame in frame_list:
+                        video_writer.write(saved_frame)
+                    video_writer.release()
+                    return video_path
+    return False
+        

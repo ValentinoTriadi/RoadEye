@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Depends, HTTPException
+from fastapi import FastAPI, Request, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,21 +38,32 @@ def get_db():
     finally:
         db.close()
 
-
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
+@app.post("/upload-video")
+async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """
+        Upload video to server
+    """
+    try:
+        contents = await file.read()
+        with open(f"./api/static/video.mp4", "wb") as f:
+            f.write(contents)
+        return JSONResponse(content={"message": "File uploaded"}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"message": str(e)}, status_code=500)
+
 @app.post("/detect")
-def detect(location:str, video_path:str, record:schemas.AccidentBase, db: Session = Depends(get_db)):
+async def detect(location:str, video_path:str, url:str, record:schemas.AccidentBase, db: Session = Depends(get_db)):
     """
         Yuuuhuuuuuuuuuuuu
     """
-    result = startapplication(location, video_path)
+    result = await startapplication(location, video_path, url)
     if result:
         record.location = location
-        record.video_path = video_path
+        record.video_path = result
         record.date = datetime.now()  
         # Return the created record
         return createAccidentRecord(db = db, Accident = record)
@@ -62,22 +73,22 @@ def detect(location:str, video_path:str, record:schemas.AccidentBase, db: Sessio
 
 
 @app.put("/delete-accident")
-def deleteAccident(id:int, db: Session = Depends(get_db)):
+async def deleteAccident(id:int, db: Session = Depends(get_db)):
     if (not getAccidentRecord(db, id)):
         raise HTTPException(status_code=400, detail="Accident ID not found!")
-    deleteAccidentRecord(db, id)
+    await deleteAccidentRecord(db, id)
     return {"status": "deleted"}
 
 @app.get("/get-accident/{id}", response_model=schemas.AccidentBase)
-def getAccidentById(id:int, db: Session = Depends(get_db)):
-    record = getAccidentRecord(db, id)
+async def getAccidentById(id:int, db: Session = Depends(get_db)):
+    record = await getAccidentRecord(db, id)
     if (record):
         return record
     raise HTTPException(status_code=400, detail="Accident ID not found!")
 
 @app.get("/get-accident/", response_model=list[schemas.AccidentBase])
-def getAccident(db: Session = Depends(get_db)):
-    record = getAllAccidentRecord(db)
+async def getAccident(db: Session = Depends(get_db)):
+    record = await getAllAccidentRecord(db)
     if (record):
         return record
     raise HTTPException(status_code=400, detail="Accident record doesn't exists!")
