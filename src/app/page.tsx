@@ -33,7 +33,7 @@ export default function Home() {
         </div>
 
         <div className='w-full h-full bg-white drop-shadow-xl py-[32px] px-[40px] space-y-[32px]'>
-          <h2 className='text-[20px] font-bold'> CCTV VIEW</h2>
+          <h2 className='text-[20px] font-bold'> LAPORAN KECELAKAAN</h2>
           <LaporanFilter />
         </div>
       </main>

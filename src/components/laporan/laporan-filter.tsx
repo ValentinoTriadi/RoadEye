@@ -13,10 +13,17 @@ import { Input } from "../ui/input";
 import dummyLocationData, { Kota } from "@/utils/data-location";
 import { Button } from "../ui/button";
 
+interface AccidentData {
+  Location: string;
+  Date: string;
+  Time: string;
+}
+
 function LaporanFilter() {
   const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
   const [selectedKota, setSelectedKota] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
+  const [accidentData, setAccidentData] = useState<AccidentData[]>([]);
 
   const getCitiesInProvince = () => {
     const selectedProvinceData = dummyLocationData.provinces.find(
@@ -82,15 +89,23 @@ function LaporanFilter() {
 
         <DropdownMenu>
           <DropdownMenuTrigger className='w-[20%] rounded-md border border-sm justify-between flex p-[12px]'>
-            <p>{selectedKota === "" ? "Kota" : selectedKota}</p>
+            <p>
+              {selectedKota === "" || selectedKota === "Provinsi belum dipilih"
+                ? "Kota"
+                : selectedKota}
+            </p>
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {getCitiesInProvince().map((kota, idx) => (
               <DropdownMenuItem
                 onClick={() => {
-                  setSelectedKota(kota);
-                  setSelectedKecamatan("");
+                  if (kota === "Provinsi belum dipilih") {
+                    setSelectedKota("");
+                  } else {
+                    setSelectedKota(kota);
+                    setSelectedKecamatan("");
+                  }
                 }}
                 key={idx}
               >
@@ -108,7 +123,13 @@ function LaporanFilter() {
           <DropdownMenuContent>
             {getDistrictsInCity().map((kecamatan, idx) => (
               <DropdownMenuItem
-                onClick={() => setSelectedKecamatan(kecamatan)}
+                onClick={() => {
+                  if (kecamatan === "") {
+                    setSelectedKecamatan("");
+                  } else {
+                    setSelectedKecamatan(kecamatan);
+                  }
+                }}
                 key={idx}
               >
                 {kecamatan}

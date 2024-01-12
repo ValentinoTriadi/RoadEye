@@ -23,7 +23,7 @@ function CCTVFilter() {
     );
 
     if (!selectedProvinceData) {
-      return [];
+      return ["Provinsi belum dipilih"];
     }
 
     const cityNames = selectedProvinceData.cities.map((city) => city.name);
@@ -66,7 +66,11 @@ function CCTVFilter() {
           <DropdownMenuContent className=''>
             {dummyLocationData.provinces.map((provinsi, idx) => (
               <DropdownMenuItem
-                onClick={() => setSelectedProvinsi(provinsi.name)}
+                onClick={() => {
+                  setSelectedProvinsi(provinsi.name);
+                  setSelectedKota("");
+                  setSelectedKecamatan("");
+                }}
                 key={idx}
               >
                 {provinsi.name}
@@ -82,7 +86,13 @@ function CCTVFilter() {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {getCitiesInProvince().map((kota, idx) => (
-              <DropdownMenuItem onClick={() => setSelectedKota(kota)} key={idx}>
+              <DropdownMenuItem
+                onClick={() => {
+                  setSelectedKota(kota);
+                  setSelectedKecamatan("");
+                }}
+                key={idx}
+              >
                 {kota}
               </DropdownMenuItem>
             ))}

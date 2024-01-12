@@ -12,9 +12,13 @@ function KonfirmasiKecelakaan() {
           Konfirmasi Kecelakaan
         </Button>
       </DialogTrigger>
-      <DialogContent className='w-[60%] max-w-[1080px] flex flex-col items-center'>
+      <DialogContent className='w-[40%] max-w-[1080px] flex flex-col items-center'>
         <div>
-          <CheckCircle2 strokeWidth={1.75} className='w-[550px] h-[550px]' />
+          <CheckCircle2
+            strokeWidth={1.75}
+            className='w-[275px] h-[275px]'
+            color='#04B000'
+          />
         </div>
 
         <div className='flex flex-col gap-4 text-center'>

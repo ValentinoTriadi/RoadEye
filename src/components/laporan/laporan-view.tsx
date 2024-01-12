@@ -11,6 +11,7 @@ import {
 } from "../ui/pagination";
 
 function LaporanView() {
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
   return (
     <div className='flex flex-col'>
       <div className='flex flex-col gap-4 mb-[36px]'>

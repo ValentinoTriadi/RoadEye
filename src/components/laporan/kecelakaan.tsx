@@ -61,7 +61,7 @@ function Kecelakaan() {
               </MenubarItem>
               <MenubarItem className='flex gap-2'>
                 <FileX2 className='w-[24px] h-[24px]' color='#EB7363' />
-                <p className='text-[#EB7363]'>Edit Info Kecelakaan</p>
+                <p className='text-[#EB7363]'>Hapus Laporan</p>
               </MenubarItem>
             </MenubarContent>
           </MenubarMenu>
