@@ -11,8 +11,9 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { AccidentData } from "./laporan-view";
 
-function Kecelakaan() {
+function Kecelakaan({ AccidentData }: { AccidentData: AccidentData }) {
   return (
     <div className='w-full h-[124px] flex items-center px-[18px] py-[12px] rounded-xl border-1 border relative shadow-lg'>
       <div className='mr-[36px]'>
@@ -20,9 +21,9 @@ function Kecelakaan() {
       </div>
 
       <div className='flex flex-col w-[40%]'>
-        <p className='font-bold'>Tempat Kejadian</p>
+        <p className='font-bold'>{AccidentData.location}</p>
 
-        <p className='font-bold'>Tanggal Kejadian</p>
+        <p className='font-bold'>{AccidentData.date}</p>
 
         <p>Jam Kejadian</p>
       </div>

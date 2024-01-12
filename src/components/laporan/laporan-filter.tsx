@@ -14,16 +14,43 @@ import dummyLocationData, { Kota } from "@/utils/data-location";
 import { Button } from "../ui/button";
 
 interface AccidentData {
-  Location: string;
-  Date: string;
-  Time: string;
+  id: string;
+  location: string;
+  video_path: string;
+  date: string;
+  province: string;
+  city: string;
+  district: string;
 }
 
 function LaporanFilter() {
   const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
   const [selectedKota, setSelectedKota] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
-  const [accidentData, setAccidentData] = useState<AccidentData[]>([]);
+  const [accidentCount, setAccidentCount] = useState<number>(0);
+
+  const getAccidentData = async () => {
+    try {
+      const province =
+        selectedProvinsi === "" ? "" : `province=${selectedProvinsi}`;
+      const city = selectedKota === "" ? "" : `city=${selectedKota}`;
+      const district =
+        selectedKecamatan === "" ? "" : `district=${selectedKecamatan}`;
+
+      const response = await fetch(
+        `https://fnlgp1cr-8000.asse.devtunnels.ms/count-accident/?${province}&${city}&${district}`
+      );
+      const data = await response.json();
+
+      setAccidentCount(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getAccidentData();
+  }, [selectedProvinsi, selectedKota, selectedKecamatan]);
 
   const getCitiesInProvince = () => {
     const selectedProvinceData = dummyLocationData.provinces.find(
@@ -147,7 +174,7 @@ function LaporanFilter() {
         <Button className='w-[20%] bg-[#4362E9]'>Filter Tanggal</Button>
       </div>
 
-      <LaporanView />
+      {accidentCount > 0 && <LaporanView count={accidentCount} />}
     </>
   );
 }
