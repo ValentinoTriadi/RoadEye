@@ -15,7 +15,7 @@ from .routes.detect import startapplication
 from .config.db import SessionLocal, engine
 from .routes.CRUD.create import createAccidentRecord
 from .routes.CRUD.delete import deleteAccidentRecord
-from .routes.CRUD.read import getAccidentRecord, getAllAccidentRecord 
+from .routes.CRUD.read import getAccidentRecord, getAllAccidentRecord, getAccidentCount
 
 
 app = FastAPI()
@@ -55,16 +55,21 @@ async def upload_video(file: UploadFile = File(...), db: Session = Depends(get_d
     except Exception as e:
         return JSONResponse(content={"message": str(e)}, status_code=500)
 
-@app.post("/detect")
-async def detect(location:str, video_path:str, url:str, record:schemas.AccidentBase, db: Session = Depends(get_db)):
+@app.post("/detect")    
+def detect(province:str, city:str, district:str, jalan:str, record:schemas.AccidentBase, db: Session = Depends(get_db)):
     """
         Yuuuhuuuuuuuuuuuu
     """
-    result = await startapplication(location, video_path, url)
+    # result = startapplication(location, video_path, url)
+    location = province + "_" + city + "_" + district
+    result = startapplication(location)
     if result:
-        record.location = location
+        record.location = jalan
         record.video_path = result
         record.date = datetime.now()  
+        record.province = province
+        record.city = city
+        record.district = district
         # Return the created record
         return createAccidentRecord(db = db, Accident = record)
         
@@ -73,22 +78,35 @@ async def detect(location:str, video_path:str, url:str, record:schemas.AccidentB
 
 
 @app.put("/delete-accident")
-async def deleteAccident(id:int, db: Session = Depends(get_db)):
-    if (not getAccidentRecord(db, id)):
-        raise HTTPException(status_code=400, detail="Accident ID not found!")
-    await deleteAccidentRecord(db, id)
+def deleteAccident(video_path:str, db: Session = Depends(get_db)):
+    if (not getAccidentRecord(db, video_path)):
+        raise HTTPException(status_code=400, detail="Accident Path not found!")
+    deleteAccidentRecord(db, video_path)
     return {"status": "deleted"}
 
-@app.get("/get-accident/{id}", response_model=schemas.AccidentBase)
-async def getAccidentById(id:int, db: Session = Depends(get_db)):
-    record = await getAccidentRecord(db, id)
+@app.get("/get-accident/{video_path}", response_model=schemas.AccidentBase)
+def getAccidentById(video_path:str, db: Session = Depends(get_db)):
+    record = getAccidentRecord(db, video_path)
     if (record):
         return record
     raise HTTPException(status_code=400, detail="Accident ID not found!")
 
 @app.get("/get-accident/", response_model=list[schemas.AccidentBase])
-async def getAccident(db: Session = Depends(get_db)):
-    record = await getAllAccidentRecord(db)
+def getAccident(pages:int = 0, skip:int = 0, count:int = 3, province:str|None = None, city:str|None = None, district:str|None = None, db: Session = Depends(get_db)):
+    """
+        Get all accident record with filter
+        skip = data ke-skip yang mau diambil
+        pages = pages ke brp
+        count = jumlah data yang mau diambil
+    """
+    record = getAllAccidentRecord(skip = pages*3, limit= count, db=db, province=province, city=city, district=district)
     if (record):
         return record
     raise HTTPException(status_code=400, detail="Accident record doesn't exists!")
+
+@app.get("/count-accident/")
+def getCountAccident(province:str|None = None, city:str|None = None, district:str|None = None, db: Session = Depends(get_db)):
+    """
+        Get count of accident record with filter
+    """
+    return getAccidentCount(db=db, province=province, city=city, district=district)

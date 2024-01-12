@@ -6,27 +6,37 @@ import cv2
 url = "https://103.164.218.114/camera/share/tios/2/25/index.m3u8"
 source_video = "./api/static/video.mp4"
 
-def startapplication(location, video_path, url):
+def startapplication(location:str):
+    
     model = YOLO("./api/routes/best.pt")
     font = cv2.FONT_HERSHEY_SIMPLEX
-    video = cv2.VideoCapture(source_video) # for camera use video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(url) # for camera use video = cv2.VideoCapture(0)
     frame_counter = 0
     frame_list = []
     video_folder = ".api/static/video"
 
     # create video path
     count = 0
-    video_path = f'{video_path}_{count}'
-    while os.path.isfile(os.path.join(video_folder, f'{location}_{video_path}.mp4')):
+    video_path = f'{location}_{count}'
+    while os.path.isfile(os.path.join(video_folder, f'{video_path}.mp4')):
         count += 1
-        video_path = f'{video_path}_{count}'
-    video_output_path = os.path.join(video_folder, f'{location}_{video_path}.mp4')
+        video_path = f'{location}_{count}'
+    video_output_path = os.path.join(video_folder, f'{video_path}.mp4')
+    return video_output_path # Temporary code
 
     if not os.path.exists(video_folder):
         os.makedirs(video_folder)
 
     ret = True
+    i = 0 # temporary code
     while ret:
+    
+        # temporary code
+        i+=1
+        if (i == 100):
+            print("break")
+            break
+
         ret, frame = video.read()
         results = model.predict(frame)
 

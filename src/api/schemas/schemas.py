@@ -5,6 +5,9 @@ class AccidentBase(BaseModel):
     location: str
     video_path: str
     date: datetime
+    province: str
+    city: str
+    district: str
     
 
     class Config:

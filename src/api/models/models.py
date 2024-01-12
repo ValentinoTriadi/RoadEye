@@ -11,4 +11,7 @@ class Accident(Base):
     location = Column(String)
     video_path = Column(String)
     date = Column(String, default=datetime.now())
+    province = Column(String)
+    city = Column(String)
+    district = Column(String)
     
