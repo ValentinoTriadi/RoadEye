@@ -5,20 +5,52 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import CCTVView from "./cctv-view";
-import { Input } from "./ui/input";
+import LaporanView from "./laporan-view";
+import { Input } from "../ui/input";
 import dummyLocationData, { Kota } from "@/utils/data-location";
-import { LocationData } from "@/utils/data-location";
+import { Button } from "../ui/button";
 
-function CCTVFilter() {
+interface AccidentData {
+  id: string;
+  location: string;
+  video_path: string;
+  date: string;
+  province: string;
+  city: string;
+  district: string;
+}
+
+function LaporanFilter() {
   const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
   const [selectedKota, setSelectedKota] = useState<string>("");
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
+  const [accidentCount, setAccidentCount] = useState<number>(0);
+
+  const getAccidentData = async () => {
+    try {
+      const province =
+        selectedProvinsi === "" ? "" : `province=${selectedProvinsi}`;
+      const city = selectedKota === "" ? "" : `city=${selectedKota}`;
+      const district =
+        selectedKecamatan === "" ? "" : `district=${selectedKecamatan}`;
+
+      const response = await fetch(
+        `https://fnlgp1cr-8000.asse.devtunnels.ms/count-accident/?${province}&${city}&${district}`
+      );
+      const data = await response.json();
+
+      setAccidentCount(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getAccidentData();
+  }, [selectedProvinsi, selectedKota, selectedKecamatan]);
 
   const getCitiesInProvince = () => {
     const selectedProvinceData = dummyLocationData.provinces.find(
@@ -60,16 +92,20 @@ function CCTVFilter() {
 
   return (
     <>
-      <div className='flex gap-[18px]'>
+      <div className='flex gap-[18px] h-fit'>
         <DropdownMenu>
-          <DropdownMenuTrigger className='w-[25%] rounded-md border border-sm justify-between flex p-[12px]'>
+          <DropdownMenuTrigger className='w-[20%] rounded-md border border-sm justify-between flex p-[12px]'>
             <p>{selectedProvinsi === "" ? "Provinsi" : selectedProvinsi}</p>
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent className=''>
             {dummyLocationData.provinces.map((provinsi, idx) => (
               <DropdownMenuItem
-                onClick={() => setSelectedProvinsi(provinsi.name)}
+                onClick={() => {
+                  setSelectedProvinsi(provinsi.name);
+                  setSelectedKota("");
+                  setSelectedKecamatan("");
+                }}
                 key={idx}
               >
                 {provinsi.name}
@@ -79,13 +115,27 @@ function CCTVFilter() {
         </DropdownMenu>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className='w-[25%] rounded-md border border-sm justify-between flex p-[12px]'>
-            <p>{selectedKota === "" ? "Kota" : selectedKota}</p>
+          <DropdownMenuTrigger className='w-[20%] rounded-md border border-sm justify-between flex p-[12px]'>
+            <p>
+              {selectedKota === "" || selectedKota === "Provinsi belum dipilih"
+                ? "Kota"
+                : selectedKota}
+            </p>
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {getCitiesInProvince().map((kota, idx) => (
-              <DropdownMenuItem onClick={() => setSelectedKota(kota)} key={idx}>
+              <DropdownMenuItem
+                onClick={() => {
+                  if (kota === "Provinsi belum dipilih") {
+                    setSelectedKota("");
+                  } else {
+                    setSelectedKota(kota);
+                    setSelectedKecamatan("");
+                  }
+                }}
+                key={idx}
+              >
                 {kota}
               </DropdownMenuItem>
             ))}
@@ -93,14 +143,20 @@ function CCTVFilter() {
         </DropdownMenu>
 
         <DropdownMenu>
-          <DropdownMenuTrigger className='w-[25%] rounded-md border border-sm justify-between flex p-[12px]'>
+          <DropdownMenuTrigger className='w-[20%] rounded-md border border-sm justify-between flex p-[12px]'>
             <p>{selectedKecamatan === "" ? "Kecamatan" : selectedKecamatan}</p>
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {getDistrictsInCity().map((kecamatan, idx) => (
               <DropdownMenuItem
-                onClick={() => setSelectedKecamatan(kecamatan)}
+                onClick={() => {
+                  if (kecamatan === "") {
+                    setSelectedKecamatan("");
+                  } else {
+                    setSelectedKecamatan(kecamatan);
+                  }
+                }}
                 key={idx}
               >
                 {kecamatan}
@@ -112,13 +168,15 @@ function CCTVFilter() {
         <Input
           type='text'
           placeholder='Cari Daerah/Kota/Kecamatan'
-          className='w-[25%] p-[12px]'
+          className='w-[20%] p-[12px] h-full'
         ></Input>
+
+        <Button className='w-[20%] bg-[#4362E9]'>Filter Tanggal</Button>
       </div>
 
-      <CCTVView />
+      {accidentCount > 0 && <LaporanView count={accidentCount} />}
     </>
   );
 }
 
-export default CCTVFilter;
+export default LaporanFilter;

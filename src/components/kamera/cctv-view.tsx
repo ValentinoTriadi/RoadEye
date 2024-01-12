@@ -15,7 +15,7 @@ function CCTVView() {
     <>
       <div className='grid grid-cols-3 w-full gap-8 place-content-between'>
         {urls.slice(0, 6).map((url, idx) => (
-          <video autoPlay key={idx}>
+          <video autoPlay key={idx} className='rounded-xl'>
             <source src={url} type='application/x-mpegURL' />
           </video>
         ))}
