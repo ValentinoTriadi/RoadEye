@@ -1,27 +1,25 @@
 import React from "react";
+import Kecelakaan from "./kecelakaan";
+import { Pagination } from "../ui/pagination";
 import {
-  Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import urls from "@/utils/data-url";
+} from "../ui/pagination";
 
-function CCTVView() {
+function LaporanView() {
   return (
-    <>
-      <div className='grid grid-cols-3 w-full gap-8 place-content-between'>
-        {urls.slice(0, 6).map((url, idx) => (
-          <video autoPlay key={idx}>
-            <source src={url} type='application/x-mpegURL' />
-          </video>
-        ))}
+    <div className='flex flex-col'>
+      <div className='flex flex-col gap-4 mb-[36px]'>
+        <Kecelakaan />
+        <Kecelakaan />
+        <Kecelakaan />
       </div>
 
-      <div>
+      <div className='flex justify-center'>
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -39,8 +37,8 @@ function CCTVView() {
           </PaginationContent>
         </Pagination>
       </div>
-    </>
+    </div>
   );
 }
 
-export default CCTVView;
+export default LaporanView;

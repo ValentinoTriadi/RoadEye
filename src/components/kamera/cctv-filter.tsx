@@ -5,15 +5,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import CCTVView from "./cctv-view";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import dummyLocationData, { Kota } from "@/utils/data-location";
-import { LocationData } from "@/utils/data-location";
 
 function CCTVFilter() {
   const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
