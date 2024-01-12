@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import TestImage from "@/assets/images/test-laporan.png";
+import ReviewDialog from "./review-dialog";
 
 function NotifikasiKecelakaan() {
   return (
@@ -26,9 +27,7 @@ function NotifikasiKecelakaan() {
           <p>Jam Kejadian</p>
         </div>
 
-        <Button className='absolute right-0 mr-[18px] bg-red-500 hover:bg-red-700'>
-          Review
-        </Button>
+        <ReviewDialog />
       </div>
     </div>
   );
