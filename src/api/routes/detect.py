@@ -1,18 +1,14 @@
 import cv2
-import numpy as np
 import os
-from PIL import Image
-import random
-import numpy as np
 from ultralytics import YOLO
 import cv2
 
-model = YOLO("best.pt")
-font = cv2.FONT_HERSHEY_SIMPLEX
 url = "https://103.164.218.114/camera/share/tios/2/25/index.m3u8"
 source_video = "./api/static/video.mp4"
 
 def startapplication(location, video_path, url):
+    model = YOLO("./api/routes/best.pt")
+    font = cv2.FONT_HERSHEY_SIMPLEX
     video = cv2.VideoCapture(source_video) # for camera use video = cv2.VideoCapture(0)
     frame_counter = 0
     frame_list = []
