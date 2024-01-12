@@ -1,7 +1,7 @@
 # GDSC-Hackfest-2024
 
 
-## Team
+## Team: M2VR
 * ![Maulvi Ziadinda Maulana][Ulvi-Hacker]
 * ![Muhammad Maulana Firdaus][Maul-Hustler]
 * ![Valentino Chryslie Triadi][Valen-Hacker]
