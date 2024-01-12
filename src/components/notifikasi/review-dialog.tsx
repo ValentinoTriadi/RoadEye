@@ -42,9 +42,12 @@ function ReviewDialog() {
         <DialogClose asChild>
           <KonfirmasiKecelakaan />
         </DialogClose>
-        <Button className='bg-red-500 hover:bg-red-700'>
-          Batalkan Kecelakaan
-        </Button>
+
+        <DialogClose asChild>
+          <Button className='bg-red-500 hover:bg-red-700'>
+            Batalkan Kecelakaan
+          </Button>
+        </DialogClose>
       </DialogContent>
     </Dialog>
   );
