@@ -7,11 +7,10 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { AccidentData } from "./laporan-view";
+import DetailKecelakaan from "./detail-kecelakaan";
 
 function Kecelakaan({ AccidentData }: { AccidentData: AccidentData }) {
   return (
@@ -53,12 +52,10 @@ function Kecelakaan({ AccidentData }: { AccidentData: AccidentData }) {
             </MenubarTrigger>
             <MenubarContent className='w-[120px]'>
               <MenubarItem className='flex gap-2'>
-                <Eye className='w-[24px] h-[24px]' />
-                <p>Lihat Info</p>
+                <DetailKecelakaan data={AccidentData} />
               </MenubarItem>
               <MenubarItem className='flex gap-2'>
-                <SquarePen className='w-[24px] h-[24px]' />
-                <p>Edit Info Kecelakaan</p>
+                <DetailKecelakaan data={AccidentData} />
               </MenubarItem>
               <MenubarItem className='flex gap-2'>
                 <FileX2 className='w-[24px] h-[24px]' color='#EB7363' />

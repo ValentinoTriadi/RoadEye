@@ -5,8 +5,10 @@ import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 
 function KonfirmasiKecelakaan() {
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className='w-full'>
         <Button className='bg-[#0F172A] hover:bg-[#070a13] h-[80px] w-full'>
           Konfirmasi Kecelakaan

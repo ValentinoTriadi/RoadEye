@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Pagination,
@@ -15,7 +17,7 @@ function CCTVView() {
     <>
       <div className='grid grid-cols-3 w-full gap-8 place-content-between'>
         {urls.slice(0, 6).map((url, idx) => (
-          <video autoPlay key={idx} className='rounded-xl'>
+          <video key={idx} className='rounded-xl' autoPlay>
             <source src={url} type='application/x-mpegURL' />
           </video>
         ))}
@@ -29,9 +31,6 @@ function CCTVView() {
             </PaginationItem>
             <PaginationItem>
               <PaginationLink href='#'>1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
               <PaginationNext href='#' />

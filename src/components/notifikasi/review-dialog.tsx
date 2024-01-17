@@ -8,9 +8,10 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import TestImage from "@/assets/images/test-notifikasi.png";
-import KonfirmasiKecelakaan from "./konfirmasi-kecelakaan";
+import { useToast } from "../ui/use-toast";
 
 function ReviewDialog() {
+  const { toast } = useToast();
   return (
     <Dialog>
       <DialogTrigger className='absolute right-0'>
@@ -40,11 +41,30 @@ function ReviewDialog() {
         </div>
 
         <DialogClose asChild>
-          <KonfirmasiKecelakaan />
+          <Button
+            className='bg-[#0F172A] hover:bg-[#070a13] h-[80px] w-full'
+            onClick={() => {
+              toast({
+                title: "Laporan berhasil dibuat",
+                description: "Silahkan lanjut isi laporan kecelakaan.",
+              });
+            }}
+          >
+            Konfirmasi Kecelakaan
+          </Button>
         </DialogClose>
 
         <DialogClose asChild>
-          <Button className='bg-red-500 hover:bg-red-700'>
+          <Button
+            className='bg-red-500 hover:bg-red-700'
+            onClick={() => {
+              toast({
+                variant: "destructive",
+                title: "Laporan dibatalkan",
+                description: "Laporan kecelakaan dibatalkan.",
+              });
+            }}
+          >
             Batalkan Kecelakaan
           </Button>
         </DialogClose>

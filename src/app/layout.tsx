@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import Header from "@/components/ui/header";
+import { Toaster } from "@/components/ui/toaster";
+import { LoginProvider } from "@/utils/useLogin";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>{children}</body>
-    </html>
+    <LoginProvider>
+      <html lang='en'>
+        <body className={inter.className}>
+          {children}
+          <Toaster />
+        </body>
+      </html>
+    </LoginProvider>
   );
 }

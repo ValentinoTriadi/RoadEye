@@ -3,13 +3,11 @@ import Kecelakaan from "./kecelakaan";
 import { Pagination } from "../ui/pagination";
 import {
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
-import { set } from "react-hook-form";
 
 export interface AccidentData {
   location: string;
@@ -18,6 +16,9 @@ export interface AccidentData {
   province: string;
   city: string;
   district: string;
+  luka: number;
+  meninggal: number;
+  keterangan: string;
 }
 
 function LaporanView({ count }: { count: number }) {
@@ -54,51 +55,59 @@ function LaporanView({ count }: { count: number }) {
 
   return (
     <div className='flex flex-col'>
-      <div className='flex flex-col gap-4 mb-[36px]'>
-        {accidentData.map((accident) => (
-          <Kecelakaan AccidentData={accident} />
-        ))}
-      </div>
-
-      <div className='flex justify-center'>
-        <Pagination>
-          <PaginationContent>
-            {currentPage >= 2 && (
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => {
-                    if (currentPage > 1) {
-                      setCurrentPage(currentPage - 1);
-                    } else {
-                      setCurrentPage(currentPage);
-                    }
-                  }}
-                />
-              </PaginationItem>
-            )}
-            {pageNumbers.map((number, idx) => (
-              <PaginationItem>
-                <PaginationLink onClick={() => setCurrentPage(number)}>
-                  {number}
-                </PaginationLink>
-              </PaginationItem>
+      {count === 0 ? (
+        <div className='h-[200px] flex items-center justify-center'>
+          Tidak ada laporan kecelakaan.
+        </div>
+      ) : (
+        <>
+          <div className='flex flex-col gap-4 mb-[36px]'>
+            {accidentData.map((accident) => (
+              <Kecelakaan AccidentData={accident} />
             ))}
-            {currentPage < totalPage && currentPage != 0 && (
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => {
-                    if (currentPage < totalPage) {
-                      setCurrentPage(currentPage + 1);
-                    } else {
-                      setCurrentPage(currentPage);
-                    }
-                  }}
-                />
-              </PaginationItem>
-            )}
-          </PaginationContent>
-        </Pagination>
-      </div>
+          </div>
+
+          <div className='flex justify-center'>
+            <Pagination>
+              <PaginationContent>
+                {currentPage >= 2 && (
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => {
+                        if (currentPage > 1) {
+                          setCurrentPage(currentPage - 1);
+                        } else {
+                          setCurrentPage(currentPage);
+                        }
+                      }}
+                    />
+                  </PaginationItem>
+                )}
+                {pageNumbers.map((number, idx) => (
+                  <PaginationItem>
+                    <PaginationLink onClick={() => setCurrentPage(number)}>
+                      {number}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                {currentPage < totalPage && currentPage != 0 && (
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => {
+                        if (currentPage < totalPage) {
+                          setCurrentPage(currentPage + 1);
+                        } else {
+                          setCurrentPage(currentPage);
+                        }
+                      }}
+                    />
+                  </PaginationItem>
+                )}
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </>
+      )}
     </div>
   );
 }
