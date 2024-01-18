@@ -8,6 +8,8 @@
 * ![Rizqi Andhika Pratama][Qie-Hipster]
 <!-- [![LinkedIn][linkedin-shield-qiya]][linkedin-qiya] -->
 
+## Production Status : Unfinished
+Note: Some fetch link still using temporary fowarding port link
 
 ## Screenshot STAGE 2
 * Backend
@@ -15,6 +17,7 @@
 * Frontend
 ![Frontend-1](./img/Frontend-1.png)
 ![Frontend-2](./img/Frontend-2.png)
+
 
 
 
