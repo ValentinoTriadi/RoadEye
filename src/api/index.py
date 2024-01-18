@@ -15,7 +15,8 @@ from .routes.detect import startapplication
 from .config.db import SessionLocal, engine
 from .routes.CRUD.create import createAccidentRecord
 from .routes.CRUD.delete import deleteAccidentRecord
-from .routes.CRUD.read import getAccidentRecord, getAllAccidentRecord, getAccidentCount
+from .routes.CRUD.read import getAccidentRecord, getAllAccidentRecord, getAccidentCount, getUnconfirmedAccidentRecord
+from .routes.CRUD.update import updateAccidentRecord
 
 
 app = FastAPI()
@@ -62,7 +63,7 @@ def detect(province:str, city:str, district:str, jalan:str, record:schemas.Accid
     """
     # result = startapplication(location, video_path, url)
     location = province + "_" + city + "_" + district
-    result = startapplication(location)
+    result = startapplication(location, db)
     if result:
         record.location = jalan
         record.video_path = result
@@ -70,6 +71,9 @@ def detect(province:str, city:str, district:str, jalan:str, record:schemas.Accid
         record.province = province
         record.city = city
         record.district = district
+        record.luka = -1
+        record.meninggal = -1
+        record.keterangan = ""
         # Return the created record
         return createAccidentRecord(db = db, Accident = record)
         
@@ -84,8 +88,9 @@ def deleteAccident(video_path:str, db: Session = Depends(get_db)):
     deleteAccidentRecord(db, video_path)
     return {"status": "deleted"}
 
-@app.get("/get-accident/{video_path}", response_model=schemas.AccidentBase)
-def getAccidentById(video_path:str, db: Session = Depends(get_db)):
+@app.get("/get-accidentbypath/", response_model=schemas.AccidentBase)
+def getAccidentByVideoPath(video_path:str, db: Session = Depends(get_db)):
+    print(video_path + "123")
     record = getAccidentRecord(db, video_path)
     if (record):
         return record
@@ -110,3 +115,23 @@ def getCountAccident(province:str|None = None, city:str|None = None, district:st
         Get count of accident record with filter
     """
     return getAccidentCount(db=db, province=province, city=city, district=district)
+
+@app.put("/update-accident/", response_model=schemas.AccidentBase)
+def updateAccident(video_path:str, data:schemas.AccidentUpdateBase, luka:int|None = None, meninggal:int|None = None, keterangan:str|None = None, db: Session = Depends(get_db)):
+    """
+        Update accident record
+    """
+
+    data_model = getAccidentRecord(db, video_path)
+    if (not data_model):
+        raise HTTPException(status_code=400, detail="Accident not found!")
+
+
+    return updateAccidentRecord(db=db, data=data, video_path=video_path, luka=luka, meninggal=meninggal, keterangan=keterangan)
+
+@app.get("/get-unconfirmed-accident/", response_model=list[schemas.AccidentBase])
+def getUnconfirmedAccident(db: Session = Depends(get_db)):
+    """
+        Get all unconfirmed accident record
+    """
+    return getUnconfirmedAccidentRecord(db=db)

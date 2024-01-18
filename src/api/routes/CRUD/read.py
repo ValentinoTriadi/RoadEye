@@ -24,3 +24,6 @@ def getAccidentCount(db: Session, province:str|None, city:str|None, district:str
         return db.query(models.Accident).filter(models.Accident.province == province).count()
     else:
         return db.query(models.Accident).count()
+    
+def getUnconfirmedAccidentRecord(db: Session):
+    return db.query(models.Accident).filter(models.Accident.luka == -1, models.Accident.meninggal == -1, models.Accident.keterangan == "").all()  

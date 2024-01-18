@@ -1,41 +1,47 @@
 import cv2
 import os
 from ultralytics import YOLO
-import cv2
+from sqlalchemy.orm import Session
+from .CRUD.read import getAccidentRecord
 
 url = "https://103.164.218.114/camera/share/tios/2/25/index.m3u8"
 source_video = "./api/static/video.mp4"
 
-def startapplication(location:str):
+def startapplication(location:str, db: Session):
     
     model = YOLO("./api/routes/best.pt")
     font = cv2.FONT_HERSHEY_SIMPLEX
-    video = cv2.VideoCapture(url) # for camera use video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(source_video) # for camera use video = cv2.VideoCapture(0)
     frame_counter = 0
     frame_list = []
-    video_folder = ".api/static/video"
+    video_folder = "static/video"
+    image_folder = "static/image"
 
     # create video path
     count = 0
     video_path = f'{location}_{count}'
-    while os.path.isfile(os.path.join(video_folder, f'{video_path}.mp4')):
+    image_path = f'{location}_{count}'
+    video_output_path = f"{video_folder}/{video_path}.mp4"
+    while getAccidentRecord(db, video_output_path):
         count += 1
         video_path = f'{location}_{count}'
-    video_output_path = os.path.join(video_folder, f'{video_path}.mp4')
-    return video_output_path # Temporary code
+        image_path = f'{location}_{count}'
+        video_output_path = f"{video_folder}/{video_path}.mp4"
+        image_output_path = f"{image_folder}/{image_path}.jpg"
+    # return video_output_path # Temporary code
 
     if not os.path.exists(video_folder):
         os.makedirs(video_folder)
 
     ret = True
-    i = 0 # temporary code
+    # i = 0 # temporary code
     while ret:
     
-        # temporary code
-        i+=1
-        if (i == 100):
-            print("break")
-            break
+        # # temporary code
+        # i+=1
+        # if (i == 100):
+        #     print("break")
+        #     break
 
         ret, frame = video.read()
         results = model.predict(frame)
@@ -55,6 +61,8 @@ def startapplication(location:str):
 
             if (str(names[cls]) == "car-crash" or str(names[cls]) == "car-crashs") and round(conf, 2) > 0.7:
                 frame_list.append(frame)  # Tambahkan frame ke daftar
+                if frame_counter == 0:
+                    cv2.imwrite(image_output_path, frame)
                 frame_counter += 1
             else:
                 if len(frame_list) > 30 : 
@@ -64,6 +72,6 @@ def startapplication(location:str):
                     for saved_frame in frame_list:
                         video_writer.write(saved_frame)
                     video_writer.release()
-                    return video_path
+                    return video_output_path
     return False
         
