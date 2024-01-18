@@ -67,6 +67,7 @@ RoadEye is an advanced traffic monitoring system that leverages artificial intel
 * [![Tailwind][TailwindCSS]][Tailwind-url]
 * [![Python][Python]][Python-url]
 * [![FastAPI][FastAPI]][FastAPI-url]
+* [![PostgreSQL][postgresql]][postgresql-url]
 
 <br/>
 
@@ -210,6 +211,8 @@ Team: ```M2VR```
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[postgresql]:https://img.shields.io/badge/postgresql-000000?style=for-the-badge&logo=postgresql&logoColor=white
+[postgresql-url]:https://www.postgresql.org/
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [TailwindCSS]: https://img.shields.io/badge/tailwind-000000?style=for-the-badge&logo=tailwindcss&logoColor=white
