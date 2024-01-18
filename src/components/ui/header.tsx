@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "./button";
-import { ModeToggle } from "./darkmode-toggle";
 import Link from "next/link";
 import { useLoginContext } from "@/utils/useLogin";
 

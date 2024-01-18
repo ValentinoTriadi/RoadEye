@@ -6,7 +6,7 @@ const LoginContext = createContext({
   login: false,
   type: "public",
   loginStatus: () => {},
-  loginType: () => {},
+  loginType: ({ type }: { type: string }) => {},
 });
 
 export const useLoginContext = () => {
@@ -21,14 +21,8 @@ export const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     setLogin((prevLogin) => !prevLogin);
   };
 
-  const loginType = () => {
-    setType((prevType) => {
-      if (prevType === "public") {
-        return "admin";
-      } else {
-        return "public";
-      }
-    });
+  const loginType = ({ type }: { type: string }) => {
+    setType(type);
   };
 
   const value = {

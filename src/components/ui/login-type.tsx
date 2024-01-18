@@ -6,10 +6,10 @@ function LoginTypeBar() {
   const { type, loginType } = useLoginContext();
   return (
     <div className='w-full h-[52px] flex gap-4'>
-      <div className='w-[15%] h-full rounded-lg bg-[#1A1D4E] flex justify-around items-center'>
+      <div className='w-fit gap-4 px-4 h-full rounded-lg bg-[#1A1D4E] flex justify-around items-center'>
         <Button
           onClick={() => {
-            loginType();
+            loginType({ type: "public" });
           }}
           className={`${
             type === "public" ? "bg-white text-black" : ""
@@ -20,13 +20,24 @@ function LoginTypeBar() {
 
         <Button
           onClick={() => {
-            loginType();
+            loginType({ type: "admin" });
           }}
           className={`${
             type === "admin" ? "bg-white text-black" : ""
           } hover:bg-white hover:text-black `}
         >
           Admin
+        </Button>
+
+        <Button
+          onClick={() => {
+            loginType({ type: "test" });
+          }}
+          className={`${
+            type === "test" ? "bg-white text-black" : ""
+          } hover:bg-white hover:text-black `}
+        >
+          Test
         </Button>
       </div>
 
