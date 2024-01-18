@@ -90,7 +90,7 @@ RoadEye is an advanced traffic monitoring system that leverages artificial intel
   npm i -g pnpm
   pnpm install
   ```
-* Virtual Environment (Optional)
+* Virtual Environment (Optional)  
   <a href= #Virtual-Environment>How to Install Virtual Environment</a>
 * Python Dependencies
   ```bash
@@ -155,8 +155,7 @@ RoadEye is an advanced traffic monitoring system that leverages artificial intel
 
 <!-- PROJECT STATUS -->
 ## Project Status
-Project status: *unfinished*
-
+Project status: *unfinished*  
 Note: Some fetch link still using temporary fowarding port link
 
 <br/>
