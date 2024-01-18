@@ -1,23 +1,29 @@
+"use client";
+
 import React from "react";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import urls from "@/utils/data-url";
+import { urlData } from "@/utils/url-data";
+import VideoDialog from "./dialog-video";
 
-function CCTVView() {
+function CCTVView({ urls }: { urls: urlData[] | undefined }) {
   return (
     <>
       <div className='grid grid-cols-3 w-full gap-8 place-content-between'>
-        {urls.slice(0, 6).map((url, idx) => (
-          <video autoPlay key={idx} className='rounded-xl'>
-            <source src={url} type='application/x-mpegURL' />
-          </video>
+        {urls?.map((some, idx) => (
+          <div className='relative'>
+            <video key={idx} className='rounded-xl' autoPlay>
+              <source src={some.url} type='application/x-mpegURL' />
+              The browser does not support the video tag.
+            </video>
+            <VideoDialog url={some.url} name={some.name} />
+          </div>
         ))}
       </div>
 
@@ -29,9 +35,6 @@ function CCTVView() {
             </PaginationItem>
             <PaginationItem>
               <PaginationLink href='#'>1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
               <PaginationNext href='#' />

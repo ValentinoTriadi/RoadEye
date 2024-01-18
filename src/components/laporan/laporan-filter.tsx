@@ -21,6 +21,9 @@ interface AccidentData {
   province: string;
   city: string;
   district: string;
+  luka: number;
+  meninggal: number;
+  keterangan: string;
 }
 
 function LaporanFilter() {
@@ -174,7 +177,7 @@ function LaporanFilter() {
         <Button className='w-[20%] bg-[#4362E9]'>Filter Tanggal</Button>
       </div>
 
-      {accidentCount > 0 && <LaporanView count={accidentCount} />}
+      <LaporanView count={accidentCount} />
     </>
   );
 }

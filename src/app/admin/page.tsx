@@ -5,9 +5,12 @@ import LaporanFilter from "@/components/laporan/laporan-filter";
 import NotifikasiKecelakaan from "@/components/notifikasi/notifikasi-kecelakaan";
 import Footer from "@/components/ui/footer";
 import Header from "@/components/ui/header";
+import { useLoginContext } from "@/utils/useLogin";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useLoginContext } from "@/utils/useLogin";
+import LoginTypeBar from "@/components/ui/login-type";
+import React from "react";
+import VideoUpload from "./components/upload-video";
 
 export default function Home() {
   const router = useRouter();
@@ -22,12 +25,22 @@ export default function Home() {
     }
   }, [router]);
 
-  const { login } = useLoginContext();
+  const { login, type } = useLoginContext();
 
   return (
     <>
       <Header />
       <main className='flex min-h-screen flex-col items-center justify-between px-[52px] py-[31px] gap-10'>
+        {login ? <LoginTypeBar /> : null}
+        {(type === "admin" || type === "test") && <NotifikasiKecelakaan />}
+
+        {type === "test" && (
+          <div className='w-full h-full bg-white drop-shadow-xl py-[32px] px-[40px] space-y-[32px]'>
+            <h2 className='text-[20px] font-bold'> TEST VIDEO</h2>
+            <VideoUpload />
+          </div>
+        )}
+
         <div className='w-full h-full bg-white drop-shadow-xl py-[32px] px-[40px] space-y-[32px]'>
           <h2 className='text-[20px] font-bold'> CCTV VIEW</h2>
           <CCTVFilter />
