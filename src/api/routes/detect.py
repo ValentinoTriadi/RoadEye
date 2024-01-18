@@ -14,8 +14,8 @@ def startapplication(location:str, db: Session):
     video = cv2.VideoCapture(source_video) # for camera use video = cv2.VideoCapture(0)
     frame_counter = 0
     frame_list = []
-    video_folder = "static/video"
-    image_folder = "static/image"
+    video_folder = "api/static/video"
+    image_folder = "api/static/image"
 
     # create video path
     count = 0
@@ -28,7 +28,7 @@ def startapplication(location:str, db: Session):
         image_path = f'{location}_{count}'
         video_output_path = f"{video_folder}/{video_path}.mp4"
         image_output_path = f"{image_folder}/{image_path}.jpg"
-    # return video_output_path # Temporary code
+    return video_output_path # Temporary code
 
     if not os.path.exists(video_folder):
         os.makedirs(video_folder)
