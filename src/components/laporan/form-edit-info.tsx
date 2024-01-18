@@ -15,6 +15,9 @@ import {
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
 import { AccidentData } from "./laporan-view";
+import axios from "axios";
+import { useLoginContext } from "@/utils/useLogin";
+import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
   luka: z.coerce
@@ -27,6 +30,8 @@ const formSchema = z.object({
 });
 
 function EditInfo({ data }: { data: AccidentData }) {
+  const { toast } = useToast();
+  const { refecthSave } = useLoginContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,8 +41,38 @@ function EditInfo({ data }: { data: AccidentData }) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  function onSubmit(datas: z.infer<typeof formSchema>) {
+    const updateAccident = async () => {
+      try {
+        const form = `luka=${datas.luka}&meninggal=${datas.meninggal}&keterangan=${datas.keterangan}`;
+        const video_path = `video_path=${data.video_path}`;
+        const endpoint = `https://fnlgp1cr-8000.asse.devtunnels.ms/update-accident/?${video_path}&${form}`;
+
+        const response = await axios.put(
+          endpoint,
+          {
+            luka: datas.luka,
+            meninggal: datas.meninggal,
+            keterangan: datas.keterangan,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        refecthSave();
+        toast({
+          title: "Berhasil",
+          description: "Berhasil mengubah data kecelakaan",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    updateAccident();
   }
 
   return (

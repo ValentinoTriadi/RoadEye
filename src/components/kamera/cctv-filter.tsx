@@ -10,7 +10,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import CCTVView from "./cctv-view";
 import { Input } from "../ui/input";
-import dummyLocationData, { Kota } from "@/utils/data-location";
+import urlDataAll from "@/utils/url-data";
 
 function CCTVFilter() {
   const [selectedProvinsi, setSelectedProvinsi] = useState<string>("");
@@ -18,7 +18,7 @@ function CCTVFilter() {
   const [selectedKecamatan, setSelectedKecamatan] = useState<string>("");
 
   const getCitiesInProvince = () => {
-    const selectedProvinceData = dummyLocationData.provinces.find(
+    const selectedProvinceData = urlDataAll.provinces.find(
       (province) => province.name === selectedProvinsi
     );
 
@@ -32,7 +32,7 @@ function CCTVFilter() {
   };
 
   const getDistrictsInCity = () => {
-    const selectedProvinceData = dummyLocationData.provinces.find(
+    const selectedProvinceData = urlDataAll.provinces.find(
       (province) => province.name === selectedProvinsi
     );
 
@@ -64,7 +64,7 @@ function CCTVFilter() {
             <ChevronDown className='w-[24px] h-[24px]' />
           </DropdownMenuTrigger>
           <DropdownMenuContent className=''>
-            {dummyLocationData.provinces.map((provinsi, idx) => (
+            {urlDataAll.provinces.map((provinsi, idx) => (
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedProvinsi(provinsi.name);
@@ -123,7 +123,24 @@ function CCTVFilter() {
         ></Input>
       </div>
 
-      <CCTVView />
+      {selectedProvinsi !== "" &&
+      selectedKota !== "" &&
+      selectedKecamatan !== "" ? (
+        <CCTVView
+          urls={
+            urlDataAll.provinces
+              .find((provinsi) => provinsi.name === selectedProvinsi)
+              ?.cities.find((kota) => kota.name === selectedKota)
+              ?.districts.find(
+                (kecamatan) => kecamatan.name === selectedKecamatan
+              )?.urls
+          }
+        />
+      ) : (
+        <div className='h-[200px] flex items-center justify-center'>
+          Silahkan pilih provinsi, kota, dan kecamatan.
+        </div>
+      )}
     </>
   );
 }

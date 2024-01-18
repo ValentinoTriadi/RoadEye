@@ -3,10 +3,13 @@ import React from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { useLoginContext } from "@/utils/useLogin";
 
 function VideoUpload() {
   const [file, setFile] = React.useState<File | null>(null);
   const { toast } = useToast();
+  const { refecthSave } = useLoginContext();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -14,15 +17,64 @@ function VideoUpload() {
     }
   }
 
+  function detectAccident() {
+    const province = "Jawa Barat";
+    const city = "Bandung";
+    const district = "Cimahi";
+    const jalan = "Asia Afrika";
+    const now = new Date().toISOString();
+    const endPoint =
+      "https://fnlgp1cr-8000.asse.devtunnels.ms/detect?province=" +
+      province +
+      "&city=" +
+      city +
+      "&district=" +
+      district +
+      "&jalan=" +
+      jalan;
+
+    const detect = async () => {
+      try {
+        const response = await axios.post(
+          endPoint,
+          {
+            location: jalan,
+            video_path: "string",
+            date: now,
+            province: province,
+            city: city,
+            district: district,
+            luka: 0,
+            meninggal: 0,
+            keterangan: "string",
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          refecthSave();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    detect();
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData();
 
-    formData.append("file_upload", file as File);
+    formData.append("file", file as File);
 
     try {
-      const endPoint = "http://localhost:8000/uploadfile/"; //isi sesuai endpoint back end
+      const endPoint = "https://fnlgp1cr-8000.asse.devtunnels.ms/upload-video"; //isi sesuai endpoint back end
       const res = await fetch(endPoint, {
         method: "POST",
         body: formData,
@@ -33,6 +85,8 @@ function VideoUpload() {
           title: "File Submitted Successfully!",
           description: "Please continue to submit the data set.",
         });
+
+        detectAccident();
       } else {
         toast({
           title: "Something Went Wrong!",

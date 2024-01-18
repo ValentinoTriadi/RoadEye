@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
+import { AccidentData } from "../laporan/laporan-view";
 
 const formSchema = z.object({
   luka: z.coerce
@@ -25,7 +26,7 @@ const formSchema = z.object({
   keterangan: z.string().min(1, { message: "Keterangan tidak boleh kosong" }),
 });
 
-function FormLaporan() {
+function FormLaporan({ accidentData }: { accidentData: AccidentData }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,7 +37,20 @@ function FormLaporan() {
   });
 
   function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    const form = `luka=${data.luka}&meninggal=${data.meninggal}&keterangan=${data.keterangan}`;
+    const video_path = accidentData.video_path;
+
+    const updateAccident = async () => {
+      try {
+        const response = await fetch(
+          `https://fnlgp1cr-8000.asse.devtunnels.ms/update_accident/?${video_path}&${form}`
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    updateAccident();
   }
 
   return (

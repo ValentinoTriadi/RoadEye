@@ -12,8 +12,21 @@ import Image from "next/image";
 import TestImage from "@/assets/images/test-notifikasi.png";
 import { CalendarDays, Clock1, MapPin } from "lucide-react";
 import FormLaporan from "./laporan-form";
+import { AccidentData } from "../laporan/laporan-view";
 
-function IsiLaporan() {
+function IsiLaporan({ accidentData }: { accidentData: AccidentData }) {
+  const inputDate: string | undefined = accidentData.date;
+  const dateObject: Date = new Date(inputDate);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+
+  const formattedDate: string = dateObject.toLocaleDateString("id-ID", options);
+  const formattedTime: string = dateObject.toLocaleTimeString("id-ID");
+
   return (
     <Dialog>
       <DialogTrigger className='absolute right-0'>
@@ -40,7 +53,7 @@ function IsiLaporan() {
                   <MapPin className='h-12 w-12' strokeWidth={1} />
                   <div className='flex flex-col'>
                     <span className='font-light'>Tempat Kejadian</span>
-                    <span className='font-medium'>Jalan Raya Bogor</span>
+                    <span className='font-medium'>{accidentData.location}</span>
                   </div>
                 </div>
 
@@ -48,7 +61,7 @@ function IsiLaporan() {
                   <CalendarDays className='h-12 w-12' strokeWidth={1} />
                   <div className='flex flex-col'>
                     <span className='font-light'>Tanggal Kejadian</span>
-                    <span className='font-medium'>Jalan Raya Bogor</span>
+                    <span className='font-medium'>{formattedDate}</span>
                   </div>
                 </div>
 
@@ -56,7 +69,7 @@ function IsiLaporan() {
                   <Clock1 className='h-12 w-12' strokeWidth={1} />
                   <div className='flex flex-col'>
                     <span className='font-light'>Waktu Kejadian</span>
-                    <span className='font-medium'>Jalan Raya Bogor</span>
+                    <span className='font-medium'>{formattedTime}</span>
                   </div>
                 </div>
               </div>
@@ -67,7 +80,7 @@ function IsiLaporan() {
             KETERANGAN LEBIH LANJUT
           </div>
 
-          <FormLaporan />
+          <FormLaporan accidentData={accidentData} />
         </div>
       </DialogContent>
     </Dialog>

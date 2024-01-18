@@ -24,10 +24,11 @@ function DetailKecelakaan({ data }: { data: AccidentData }) {
 
   const formattedDate: string = dateObject.toLocaleDateString("id-ID", options);
   const formattedTime: string = dateObject.toLocaleTimeString("id-ID");
+  const JumlahKorban: number = data.luka + data.meninggal;
 
   return (
     <Dialog>
-      <DialogTrigger className='absolute right-0'>
+      <DialogTrigger className='flex text-[16px] p-1 px-2 gap-2 hover:bg-slate-100 w-full'>
         <Eye className='w-[24px] h-[24px]' />
         <p>Lihat Info</p>
       </DialogTrigger>
@@ -84,7 +85,16 @@ function DetailKecelakaan({ data }: { data: AccidentData }) {
                   className='w-[48px] h-[48px] fill-[#4362E9]'
                   color='#4362E9'
                 />
-                <p>Jumlah Korban</p>
+                <p className='w-[200px]'>Jumlah Korban</p>
+                <p>
+                  {JumlahKorban > 0 ? (
+                    <span className='font-bold text-[#EB7376]'>
+                      {JumlahKorban}
+                    </span>
+                  ) : (
+                    <span className='font-bold text-[#EB7363]'>0</span>
+                  )}
+                </p>
               </div>
 
               <div className='flex items-center'>
@@ -92,7 +102,12 @@ function DetailKecelakaan({ data }: { data: AccidentData }) {
                   className='w-[48px] h-[48px] fill-[#F5CB69]'
                   color='#F5CB69'
                 />
-                <p>Jumlah Korban</p>
+                <p className='w-[200px]'>Jumlah Luka-luka</p>
+                {JumlahKorban > 0 ? (
+                  <span className='font-bold text-[#EB7376]'>{data.luka}</span>
+                ) : (
+                  <span className='font-bold text-[#EB7363]'>0</span>
+                )}
               </div>
 
               <div className='flex items-center'>
@@ -100,12 +115,23 @@ function DetailKecelakaan({ data }: { data: AccidentData }) {
                   className='w-[48px] h-[48px] fill-[#EB7363]'
                   color='#EB7363'
                 />
-                <p>Jumlah Korban</p>
+                <p className='w-[200px]'>Jumlah Meninggal</p>
+                {data.meninggal > 0 ? (
+                  <span className='font-bold text-[#EB7376]'>
+                    {data.meninggal}
+                  </span>
+                ) : (
+                  <span className='font-bold text-[#EB7363]'>0</span>
+                )}
               </div>
             </div>
 
             <div className='w-full h-full'>
-              <p>{data.keterangan}</p>
+              <p>
+                {data.keterangan === ""
+                  ? "Belum ada keterangan"
+                  : data.keterangan}
+              </p>
             </div>
           </div>
         </div>

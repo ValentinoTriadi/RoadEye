@@ -8,6 +8,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "../ui/pagination";
+import { useLoginContext } from "../../utils/useLogin";
 
 export interface AccidentData {
   location: string;
@@ -26,6 +27,7 @@ function LaporanView({ count }: { count: number }) {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const dataPerPage: number = 3;
   const totalPage: number = Math.ceil(count / dataPerPage);
+  const { refecth, refecthSave } = useLoginContext();
 
   let pageNumbers: number[] = [];
 
@@ -51,7 +53,10 @@ function LaporanView({ count }: { count: number }) {
 
   React.useEffect(() => {
     getAccidentData();
-  }, [currentPage]);
+    if (refecth) {
+      refecthSave();
+    }
+  }, [currentPage, refecth]);
 
   return (
     <div className='flex flex-col'>
