@@ -14,4 +14,7 @@ class Accident(Base):
     province = Column(String)
     city = Column(String)
     district = Column(String)
+    luka = Column(Integer, default=-1)
+    meninggal = Column(Integer, default=-1)
+    keterangan = Column(String)
     

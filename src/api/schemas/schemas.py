@@ -8,7 +8,17 @@ class AccidentBase(BaseModel):
     province: str
     city: str
     district: str
-    
+    luka: int
+    meninggal: int
+    keterangan: str | None
+
+    class Config:
+        orm_mode = True
+
+class AccidentUpdateBase(BaseModel):
+    luka: int
+    meninggal: int
+    keterangan: str | None
 
     class Config:
         orm_mode = True
